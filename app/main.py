@@ -15,12 +15,14 @@ if __package__ in (None, ""):
         HarryPotterCollection,
         HarryPotterResource,
     )
+    from app.resources.CustomerResource import Customer, CustomerCollection, CustomerResource
 else:
     from .resources.HarryPotterResource import (
         HarryPotterCharacter,
         HarryPotterCollection,
         HarryPotterResource,
     )
+    from .resources.CustomerResource import Customer, CustomerCollection, CustomerResource
 
 
 def _get_app_name() -> str:
@@ -30,6 +32,7 @@ def _get_app_name() -> str:
 
 app = FastAPI(title=_get_app_name(), version="0.1.0")
 harry_potter_resource = HarryPotterResource()
+customer_resource = CustomerResource()
 
 
 class EchoRequest(BaseModel):
@@ -95,6 +98,52 @@ def update_harry_potter_character(
 @app.delete("/harry-potter/{character_id}", tags=["harry-potter"])
 def delete_harry_potter_character(character_id: str) -> dict[str, int]:
     deleted = harry_potter_resource.delete(character_id)
+    return {"deleted": deleted}
+
+
+## Customer endpoints
+
+@app.get("/customers", tags=["customers"])
+def get_customers(
+    customerName: str | None = None,
+    city: str | None = None,
+    country: str | None = None,
+) -> CustomerCollection:
+    template: dict = {}
+    if customerName is not None:
+        template["customerName"] = customerName
+    if city is not None:
+        template["city"] = city
+    if country is not None:
+        template["country"] = country
+    return customer_resource.get(template)
+
+
+@app.get("/customers/{customer_id}", tags=["customers"])
+def get_customer_by_id(customer_id: str) -> Customer:
+    try:
+        return customer_resource.get_by_id(customer_id)
+    except ValueError as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
+
+
+@app.post("/customers", tags=["customers"])
+def create_customer(new_data: Customer) -> str:
+    return customer_resource.post(new_data)
+
+
+@app.put("/customers/{customer_id}", tags=["customers"])
+def update_customer(customer_id: str, new_data: Customer) -> dict[str, int]:
+    try:
+        updated = customer_resource.put(customer_id, new_data)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+    return {"updated": updated}
+
+
+@app.delete("/customers/{customer_id}", tags=["customers"])
+def delete_customer(customer_id: str) -> dict[str, int]:
+    deleted = customer_resource.delete(customer_id)
     return {"deleted": deleted}
 
 
