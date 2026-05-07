@@ -19,7 +19,7 @@ class MySQLDataService(AbstractBaseDataService):
         self._host = str(config.get("host", os.getenv("MYSQL_HOST", "localhost")))
         self._port = int(config.get("port", os.getenv("MYSQL_PORT", 3306)))
         self._user = str(config.get("user", os.getenv("MYSQL_USER", "root")))
-        self._password = str(config.get("password", os.getenv("MYSQL_PASSWORD", "D1373rj__!!")))
+        self._password = str(config.get("password", os.getenv("MYSQL_PASSWORD", "")))
         self._database = str(config.get("database", os.getenv("MYSQL_DATABASE", "classicmodels")))
 
     def _get_connection(self) -> pymysql.connections.Connection:
