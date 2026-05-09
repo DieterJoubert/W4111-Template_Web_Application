@@ -1,6 +1,7 @@
 fastapi>=0.114.0
 starlette>=0.38.5
 uvicorn[standard]
+pydantic
 pytest
 requests
 httpx>=0.27

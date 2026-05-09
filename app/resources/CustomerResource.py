@@ -51,10 +51,10 @@ class CustomerResource(AbstractBaseResource):
     def post(self, new_data: Customer) -> str:
         return self._service.create(new_data.model_dump(exclude_none=False))
 
-    def put(self, character_id: str, new_data: Customer) -> int:
+    def put(self, customer_id: str, new_data: Customer) -> int:
         data = new_data.model_dump()
-        data["customerNumber"] = character_id
-        return self._service.updateByPrimaryKey(character_id, data)
+        data["customerNumber"] = customer_id
+        return self._service.updateByPrimaryKey(customer_id, data)
 
     def delete(self, id: str) -> int:
         return self._service.deleteByPrimaryKey(id)
